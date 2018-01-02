@@ -61,12 +61,33 @@ let defaultShader = Object.keys(shaders)[0];
     sandbox = new GlslCanvas(canvas);
   
     sandbox.setUniform('u_resolution', canvas.width, canvas.height);
+
+    canvas.addEventListener("render", () => {
+      console.log("hello");
+    });
+    
     
     let shaderCode = shaders[shader];
 
     shaderCode = shaderCode.replace("//inject", mapping);
     
     sandbox.load(shaderCode);
+    sandbox.uniform('Matrix3fv', "mat3", "rotation", false, new Float32Array([1,0,0, 0,1,0, 0,0,1]));
+    
+    sandbox.on("render", () => {
+      
+      let u_time = ((new Date()|0) - sandbox.timeLoad) / 1000.0;
+      
+      let c = Math.cos(u_time / 10.0);
+      let s = Math.sin(u_time / 10.0);
+      
+      
+      
+      sandbox.uniform('Matrix3fv', "mat3", "rotation", false, new Float32Array([c,0,s, 0,1,0, -s,0,c]));
+    });
+  }
+  
+  function update() {
   }
   
   
@@ -75,10 +96,6 @@ let defaultShader = Object.keys(shaders)[0];
   });
   
   loadShader(defaultShader);
-  
-  
-  
-  
   
   
 })();

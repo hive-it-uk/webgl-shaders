@@ -242,7 +242,7 @@ vec3 veroniNoise(vec2 st) {
     return vec3(m_point.xy, res);
 }
 
-const int octaves = 4;
+const int octaves = 8;
 
 float fbm(vec2 p, float H, float lacunarity) {
     float value, frequency;
