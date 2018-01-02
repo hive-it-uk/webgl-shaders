@@ -323,3 +323,29 @@ float ridgedMultifractal(vec3 p, float H, float lacunarity, float offset) {
 
     return result;
 }
+
+bool sphere(vec2 p, out vec3 hit) {
+
+    float dist = 1.0 - p.x*p.x - p.y*p.y;
+
+    if (dist < 0.0) return false;
+
+    float z=sqrt( dist);
+
+    hit = vec3(p, z);
+
+    return true;
+
+}
+
+bool cylinder(vec2 p, out vec3 hit) {
+    float dist = 1.0 - p.x*p.x;
+
+    if (dist < 0.0) return false;
+
+    float z=sqrt( dist);
+
+    hit = vec3(p, z);
+
+    return true;
+}

@@ -3,6 +3,8 @@ import GlslCanvas from "glslCanvas/src/GlslCanvas";
 
 import shaders from './shaders';
 
+import mappings from './shaders/mappings.js';
+
 import css from './styles.css';
 
 let defaultShader = Object.keys(shaders)[0];
@@ -44,6 +46,8 @@ let defaultShader = Object.keys(shaders)[0];
   document.documentElement.appendChild(dropdown);
 
   let sandbox;
+  
+  let mapping = mappings.sphere;
 
   function loadShader(shader) {
     
@@ -57,7 +61,12 @@ let defaultShader = Object.keys(shaders)[0];
     sandbox = new GlslCanvas(canvas);
   
     sandbox.setUniform('u_resolution', canvas.width, canvas.height);
-    sandbox.load(shaders[shader]);
+    
+    let shaderCode = shaders[shader];
+
+    shaderCode = shaderCode.replace("//inject", mapping);
+    
+    sandbox.load(shaderCode);
   }
   
   

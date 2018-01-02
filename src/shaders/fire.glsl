@@ -10,26 +10,30 @@ uniform vec2 u_mouse;
 uniform float u_time;
 
 
-vec3 fire(vec2 p) {
+//inject
+
+vec3 fire(vec3 p) {
 
     float v;
 
-    float vscale = p.y+1.0;
-    vscale=vscale*vscale;
+    float y=p.y / 2.0;
 
-    vec3 pp = vec3(p*5.0, u_time/0.75);
-    pp.y = pp.y + u_time * 2.0;
+    float vscale = y + 1.1;
+    vscale=(vscale*vscale);
+
+    vec3 pp = vec3(p*5.0) + vec3(0,u_time * 2.0,u_time );//, u_time/0.75);
 
     v= ridgedMultifractal(pp, 0.25, 2.1, 0.7)
         * vscale
-        + (p.y / 1.0);
+        + (vscale / 2.5);
 
     vec3 color;
 
     color =
-        (smoothstep(0.0, 0.3, v) * vec3(1,0,0))
-        + (smoothstep(0.3, 0.6, v) * vec3(1,0,0))
-        + (smoothstep(0.6, 1.0, v) * vec3(0,1,0))
+        (smoothstep(0.0, 0.5, v) * smoothstep(0.5,0.0,v) * vec3(.25,.25,.25))
+        //(smoothstep(0.3, 0.9, v) * vec3(1,0,0))
+        + (smoothstep(0.5, 0.7, v) * vec3(1,0,0))
+        + (smoothstep(0.9, 1.0, v) * vec3(0,1,0))
         ;
 
 
@@ -38,10 +42,9 @@ vec3 fire(vec2 p) {
 }
 
 void main() {
-	vec2 st = gl_FragCoord.xy/u_resolution;
-
-	st=vec2(0.5) - st;
-
-    gl_FragColor=vec4(fire(st), 0);
+    vec3 p;
+    if (mapping(p) ) {
+        gl_FragColor=vec4(fire(p), 0);
+    }
 
 }
