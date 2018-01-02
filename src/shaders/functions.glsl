@@ -174,6 +174,10 @@ float noise(in vec3 p) {
                );
 }
 
+float usnoise(vec3 p) {
+    return (noise(p) + 1.0) /2.0;
+}
+
 float cellNoise(vec2 p) {
     vec2 i = floor(p);
     vec2 f = fract(p);
@@ -280,4 +284,42 @@ float fbm(vec3 p, float H, float lacunarity) {
     }
 
     return value;
+}
+
+float ridgedMultifractal(vec3 p, float H, float lacunarity, float offset) {
+    float result, frequency, remainder;
+    float weight, signal, exponent;
+
+    float gain = 2.0;
+
+    result = 1.0;
+    frequency = 1.0;
+
+    signal = noise(p);
+    if (signal < 0.0) signal = -signal;
+    signal = offset-signal;
+    signal *=signal;
+    result = signal;
+    weight = 1.0;
+
+
+    for(int i=1; i<octaves; ++i) {
+        frequency=frequency*lacunarity;
+        p=p*lacunarity;
+
+        weight = signal * gain;
+        if (weight>1.0) weight=1.0;
+        if (weight < 0.0 ) weight= 0.0;
+
+        signal = noise(p);
+
+        if (signal <0.0) signal = -signal;
+        signal = offset - signal;
+        signal *=signal;
+        signal *=weight;
+        result += signal * pow(frequency,-H);
+
+    }
+
+    return result;
 }

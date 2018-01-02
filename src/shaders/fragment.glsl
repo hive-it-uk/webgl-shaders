@@ -136,6 +136,33 @@ vec3 fbmTest(vec2 p) {
 
 }
 
+vec3 ridgedTest(vec2 p) {
+
+    float v;
+
+    float vscale = p.y+1.0;
+    vscale=vscale*vscale;
+
+    vec3 pp = vec3(p*5.0, u_time/0.75);
+    pp.y = pp.y + u_time * 2.0;
+
+    v= ridgedMultifractal(pp, 0.25, 2.1, 0.7)
+        * vscale
+        + (p.y / 1.0);
+
+    vec3 color;
+
+    color =
+        (smoothstep(0.0, 0.3, v) * vec3(1,0,0))
+        + (smoothstep(0.3, 0.6, v) * vec3(1,0,0))
+        + (smoothstep(0.6, 1.0, v) * vec3(0,1,0))
+        ;
+
+
+    return color;
+
+}
+
 void main() {
 	vec2 st = gl_FragCoord.xy/u_resolution;
 
@@ -143,6 +170,6 @@ void main() {
 
 	//st = rotate2d(-u_time / 2.5) * st;
 
-    gl_FragColor=vec4(fbmTest(st * 10.0), 0);
+    gl_FragColor=vec4(ridgedTest(st), 0);
 
 }
